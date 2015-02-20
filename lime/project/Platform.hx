@@ -15,6 +15,7 @@ package lime.project;
 	var WINDOWS = "windows";
 	var WEBOS = "webos";
 	var EMSCRIPTEN = "emscripten";
+	var GCW0 = "gcw0";
 	var CUSTOM = null;
 
 }

@@ -56,6 +56,7 @@ class PlatformSetup {
 	private static var webOSWindowsX64SDKPath = "http://cdn.downloads.palm.com/sdkdownloads/3.0.5.676/sdkBinaries/HP_webOS_SDK-Win-3.0.5-676-x64.exe";
 	private static var webOSWindowsX86SDKPath = "http://cdn.downloads.palm.com/sdkdownloads/3.0.5.676/sdkBinaries/HP_webOS_SDK-Win-3.0.5-676-x86.exe";
 	private static var windowsVisualStudioCPPPath = "http://download.microsoft.com/download/1/D/9/1D9A6C0E-FC89-43EE-9658-B9F0E3A76983/vc_web.exe";
+	private static var GCW0ToolchainURL = "http://www.gcw-zero.com/develop";
 	
 	private static var backedUpConfig:Bool = false;
 	private static var nme:String;
@@ -483,6 +484,10 @@ class PlatformSetup {
 						default: setupHaxelib (new Haxelib (CommandLineTools.defaultLibrary));
 						
 					}
+					
+				case "gcw0":
+				
+					setupGCW0();
 				
 				default:
 					
@@ -2033,6 +2038,26 @@ class PlatformSetup {
 			
 			downloadFile (windowsVisualStudioCPPPath);
 			runInstaller (Path.withoutDirectory (windowsVisualStudioCPPPath));
+			
+		}
+		
+	}
+	
+	
+	public static function setupGCW0 ():Void {
+		
+		var answer = CLIHelper.ask ("Download and install the GCW-Zero Toolchain?");
+		
+		if (answer == YES || answer == ALWAYS) {
+			
+			LogHelper.println ("You may download the GCW-Zero Toolchain from the GCW-Zero Developer portal.");
+			var secondAnswer = CLIHelper.ask ("Would you like to open the download page?");
+			
+			if (secondAnswer != NO) {
+				
+				ProcessHelper.openURL (GCW0ToolchainURL);
+				
+			}
 			
 		}
 		

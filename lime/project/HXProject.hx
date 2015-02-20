@@ -182,6 +182,15 @@ class HXProject {
 					architectures = [ Architecture.X86 ];
 					
 				}
+				
+			case GCW0:
+				
+				platformType = PlatformType.MOBILE;
+				architectures = [];
+				
+				defaultWindow.width = 320;
+				defaultWindow.height = 240;
+				defaultWindow.fps = 0;
 			
 			default:
 				

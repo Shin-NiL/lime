@@ -557,6 +557,10 @@ class CommandLineTools {
 				case EMSCRIPTEN:
 					
 					platform = new EmscriptenPlatform (command, project, targetFlags);
+			
+				case GCW0:
+					
+					platform = new GCW0Platform (command, project, targetFlags);
 				
 				default:
 				
@@ -724,6 +728,7 @@ class CommandLineTools {
 		LogHelper.println ("  \x1b[1mtizen\x1b[0m -- Create a Tizen application");
 		LogHelper.println ("  \x1b[1mwebos\x1b[0m -- Create a webOS application");
 		LogHelper.println ("  \x1b[1mwindows\x1b[0m -- Create a Windows application");
+		LogHelper.println ("  \x1b[1mgcw0\x1b[0m -- Create a GCW-Zero application");
 		LogHelper.println ("");
 		LogHelper.println (" " + LogHelper.accentColor + "Options:" + LogHelper.resetColor);
 		LogHelper.println ("");
