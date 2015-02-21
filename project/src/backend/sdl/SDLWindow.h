@@ -2,7 +2,11 @@
 #define LIME_SDL_WINDOW_H
 
 
+#ifdef GCW0
+#include <SDL2/SDL.h>
+#else
 #include <SDL.h>
+#endif
 #include <graphics/ImageBuffer.h>
 #include <ui/Window.h>
 

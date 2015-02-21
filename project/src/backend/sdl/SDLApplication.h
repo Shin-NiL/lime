@@ -1,8 +1,11 @@
 #ifndef LIME_SDL_APPLICATION_H
 #define LIME_SDL_APPLICATION_H
 
-
+#ifdef GCW0
+#include <SDL2/SDL.h>
+#else
 #include <SDL.h>
+#endif
 #include <app/Application.h>
 #include <app/UpdateEvent.h>
 #include <graphics/RenderEvent.h>

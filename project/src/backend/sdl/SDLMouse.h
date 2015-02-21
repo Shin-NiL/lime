@@ -2,7 +2,11 @@
 #define LIME_SDL_MOUSE_H
 
 
+#ifdef GCW0
+#include <SDL2/SDL.h>
+#else
 #include <SDL.h>
+#endif
 #include <ui/Mouse.h>
 #include <ui/MouseCursor.h>
 

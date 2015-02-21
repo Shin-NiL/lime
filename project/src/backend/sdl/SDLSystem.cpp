@@ -10,8 +10,14 @@
 //#include <fcntl.h>
 #endif
 
+#ifdef GCW0
+#include <SDL2/SDL_rwops.h>
+#include <SDL2/SDL_timer.h>
+#else
 #include <SDL_rwops.h>
 #include <SDL_timer.h>
+#endif
+
 
 
 namespace lime {
@@ -32,7 +38,7 @@ namespace lime {
 			
 			case SDL_RWOPS_STDFILE:
 				
-				return ((SDL_RWops*)handle)->hidden.stdio.fp;
+				//return ((SDL_RWops*)handle)->hidden.stdio.fp;
 			
 			case SDL_RWOPS_JNIFILE:
 			{

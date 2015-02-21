@@ -9,7 +9,7 @@
 	<set name="lime-legacy" value="1" if="legacy || lime_legacy" />
 	<set name="ios" value="1" if="iphone" />
 	
-	<set name="LIME_CURL" value="1" unless="emscripten" />
+	<set name="LIME_CURL" value="1" unless="emscripten || gcw0" />
 	<set name="LIME_JPEG" value="1" />
 	<set name="LIME_FREETYPE" value="1" />
 	<set name="LIME_HARFBUZZ" value="1" />
@@ -23,6 +23,7 @@
 	<set name="LIME_ZLIB" value="1" />
 	
 	<set name="OUTPUT_DIR" value="../ndll" unless="OUTPUT_DIR" />
+	
 	<set name="NATIVE_TOOLKIT_PATH" value="lib" unless="NATIVE_TOOLKIT_PATH" />
 	
 	<set name="NATIVE_TOOLKIT_CURL_SSL" value="1" />
@@ -95,6 +96,7 @@
 			
 			<compilerflag value="-I${NATIVE_TOOLKIT_PATH}/openal/include/" unless="android || emscripten" />
 			<compilerflag value="-I${NATIVE_TOOLKIT_PATH}/openal-android/include/" if="android" />
+			<!-- <compilerflag value="-I/opt/gcw0-toolchain/usr/mipsel-gcw0-linux-uclibc/sysroot/usr/include/AL/" if="gcw0" /> -->
 			<compilerflag value="-DLIME_OPENAL" />
 			<compilerflag value="-DAL_LIBTYPE_STATIC=1" />
 			
@@ -128,6 +130,8 @@
 				<compilerflag value="USE_SDL=2" />
 				
 			</section>
+			
+			<!-- <compilerflag value="-I/opt/gcw0-toolchain/usr/mipsel-gcw0-linux-uclibc/sysroot/usr/include/SDL2 -D_REENTRANT" if="gcw0" /> -->
 			
 			<section unless="emscripten">
 				
@@ -199,7 +203,7 @@
 		<files id="native-toolkit-harfbuzz" if="LIME_HARFBUZZ" />
 		<files id="native-toolkit-neko" if="LIME_NEKO" />
 		<files id="native-toolkit-ogg" if="LIME_OGG" />
-		<files id="native-toolkit-openal" if="LIME_OPENAL" unless="mac || iphone || android || emscripten" />
+		<files id="native-toolkit-openal" if="LIME_OPENAL" unless="mac || iphone || android || emscripten || gcw0" />
 		<files id="native-toolkit-openal-android" if="LIME_OPENAL android" />
 		<files id="native-toolkit-png" if="LIME_PNG" />
 		<files id="native-toolkit-sdl" if="LIME_SDL" unless="emscripten" />
@@ -209,7 +213,7 @@
 		<section unless="static_link">
 			
 			<ext value=".so" />
-			<ext value=".ndll" if="windows || mac || linux" />
+			<ext value=".ndll" if="windows || mac || linux || gcw0" />
 			
 			<section if="windows">
 				
@@ -273,6 +277,22 @@
 				<lib name="-lGLESv2" />
 				<lib name="-lGLESv1_CM" />
 				<lib name="-lOpenSLES" />
+				
+			</section>
+			
+			<section if="gcw0">
+				
+				<lib name="-lSDL2" />
+				<lib name="-lEGL" />
+				<lib name="-lGLESv2" />
+				<lib name="-lGLESv1_CM" />
+				<lib name="-lfreetype" />
+				<lib name="-ljpeg" />
+				<lib name="-logg" />
+				<lib name="-lvorbis" />
+				<lib name="-lopenal" />
+				<lib name="-lpng" />
+				<lib name="-lz" />
 				
 			</section>
 			
