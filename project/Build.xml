@@ -131,9 +131,9 @@
 				
 			</section>
 			
-			<!-- <compilerflag value="-I/opt/gcw0-toolchain/usr/mipsel-gcw0-linux-uclibc/sysroot/usr/include/SDL2 -D_REENTRANT" if="gcw0" /> -->
+			<compilerflag value="-I/opt/gcw0-toolchain/usr/mipsel-gcw0-linux-uclibc/sysroot/usr/include/SDL2" if="gcw0" />
 			
-			<section unless="emscripten">
+			<section unless="emscripten || gcw0">
 				
 				<compilerflag value="-I${NATIVE_TOOLKIT_PATH}/sdl/include/" />
 				<compilerflag value="-I${NATIVE_TOOLKIT_PATH}/sdl/include/configs/default/" unless="windows || mac || linux"/>
@@ -206,7 +206,7 @@
 		<files id="native-toolkit-openal" if="LIME_OPENAL" unless="mac || iphone || android || emscripten || gcw0" />
 		<files id="native-toolkit-openal-android" if="LIME_OPENAL android" />
 		<files id="native-toolkit-png" if="LIME_PNG" />
-		<files id="native-toolkit-sdl" if="LIME_SDL" unless="emscripten" />
+		<files id="native-toolkit-sdl" if="LIME_SDL" unless="emscripten || gcw0" />
 		<files id="native-toolkit-vorbis" if="LIME_VORBIS" />
 		<files id="native-toolkit-zlib" if="LIME_ZLIB" />
 		
