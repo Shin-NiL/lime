@@ -27,8 +27,6 @@ class GCW0Platform extends PlatformTarget {
 	
 	private var applicationDirectory:String;
 	private var executablePath:String;
-	//private var is64:Bool;
-	//private var isRaspberryPi:Bool;
 	private var targetType:String;
 	
 	
@@ -36,56 +34,8 @@ class GCW0Platform extends PlatformTarget {
 		
 		super (command, _project, targetFlags);
 		
-		/*
-		for (architecture in project.architectures) {
-			
-			if (architecture == Architecture.X64) {
-				
-				is64 = true;
-				
-			}
-			
-		}
-		
-		if (project.targetFlags.exists ("rpi")) {
-			
-			isRaspberryPi = true;
-			is64 = true;
-			
-		} else if (PlatformHelper.hostPlatform == Platform.LINUX) {
-			
-			var process = new Process ("uname", [ "-a" ]);
-			var output = process.stdout.readAll ().toString ();
-			var error = process.stderr.readAll ().toString ();
-			process.exitCode ();
-			process.close ();
-			
-			if (output.toLowerCase ().indexOf ("raspberrypi") > -1) {
-				
-				isRaspberryPi = true;
-				is64 = true;
-				
-			}
-			
-		}
-		
-		if (project.targetFlags.exists ("neko") || project.target != PlatformHelper.hostPlatform) {
-			
-			targetType = "neko";
-			
-		} else if (project.targetFlags.exists ("nodejs")) {
-			
-			targetType = "nodejs";
-			
-		} else {
-			
-			targetType = "cpp";
-			
-		}*/
-		
 		targetType = "cpp";
 		
-		//targetDirectory = project.app.path + "/linux" + (is64 ? "64" : "") + (isRaspberryPi ? "-rpi" : "") + "/" + targetType;
 		targetDirectory = project.app.path + "/gcw0/" + targetType;
 		applicationDirectory = targetDirectory + "/bin/";
 		executablePath = PathHelper.combine (applicationDirectory, project.app.file);
@@ -115,71 +65,35 @@ class GCW0Platform extends PlatformTarget {
 			
 			for (ndll in project.ndlls) {
 				
-				/*if (isRaspberryPi) {
-					
-					FileHelper.copyLibrary (project, ndll, "RPi", "", (ndll.haxelib != null && (ndll.haxelib.name == "hxcpp" || ndll.haxelib.name == "hxlibc")) ? ".dso" : ".ndll", applicationDirectory, project.debug);
-					
-				} else {
-					
-					FileHelper.copyLibrary (project, ndll, "Linux" + (is64 ? "64" : ""), "", (ndll.haxelib != null && (ndll.haxelib.name == "hxcpp" || ndll.haxelib.name == "hxlibc")) ? ".dso" : ".ndll", applicationDirectory, project.debug);
-					
-				}*/
-				
 				FileHelper.copyLibrary (project, ndll, "GCW0", "", (ndll.haxelib != null && (ndll.haxelib.name == "hxcpp" || ndll.haxelib.name == "hxlibc")) ? ".dso" : ".ndll", applicationDirectory, project.debug);
 			}
 			
 		}
+			
+		var haxeArgs = [ hxml ];
 		
-		/*if (targetType == "neko") {
-			
-			ProcessHelper.runCommand ("", "haxe", [ hxml ]);
-			NekoHelper.createExecutable (project.templatePaths, "linux" + (is64 ? "64" : ""), targetDirectory + "/obj/ApplicationMain.n", executablePath);
-			NekoHelper.copyLibraries (project.templatePaths, "linux" + (is64 ? "64" : ""), applicationDirectory);
-			
-		} else if (targetType == "nodejs") {
-			
-			ProcessHelper.runCommand ("", "haxe", [ hxml ]);
-			//NekoHelper.createExecutable (project.templatePaths, "linux" + (is64 ? "64" : ""), targetDirectory + "/obj/ApplicationMain.n", executablePath);
-			NekoHelper.copyLibraries (project.templatePaths, "linux" + (is64 ? "64" : ""), applicationDirectory);
-			
-		} else {*/
-			
-			var haxeArgs = [ hxml ];
-			
-			/*if (is64) {
-				
-				haxeArgs.push ("-D");
-				haxeArgs.push ("HXCPP_M64");
-				
-			}*/
-			
-			//var flags = [ is64 ? "-DHXCPP_M64" : "" ];
-			var flags = [""];
-			
-			if (!project.targetFlags.exists ("static")) {
-				
-				ProcessHelper.runCommand ("", "haxe", haxeArgs);
-				CPPHelper.compile (project, targetDirectory + "/obj", flags);
-				
-				FileHelper.copyFile (targetDirectory + "/obj/ApplicationMain" + (project.debug ? "-debug" : ""), executablePath);
-				
-			} else {
-				
-				ProcessHelper.runCommand ("", "haxe", haxeArgs.concat ([ "-D", "static_link" ]));
-				CPPHelper.compile (project, targetDirectory + "/obj", flags.concat ([ "-Dstatic_link" ]));
-				CPPHelper.compile (project, targetDirectory + "/obj", flags, "BuildMain.xml");
-				
-				FileHelper.copyFile (targetDirectory + "/obj/Main" + (project.debug ? "-debug" : ""), executablePath);
-				
-			}
-			
-		//}
+		var flags = [""];
 		
-		//if (PlatformHelper.hostPlatform != Platform.WINDOWS && targetType != "nodejs") {
+		if (!project.targetFlags.exists ("static")) {
 			
-			ProcessHelper.runCommand ("", "chmod", [ "755", executablePath ]);
+			ProcessHelper.runCommand ("", "haxe", haxeArgs);
+			CPPHelper.compile (project, targetDirectory + "/obj", flags);
 			
-		//}
+			FileHelper.copyFile (targetDirectory + "/obj/ApplicationMain" + (project.debug ? "-debug" : ""), executablePath);
+			
+		} else {
+			
+			ProcessHelper.runCommand ("", "haxe", haxeArgs.concat ([ "-D", "static_link" ]));
+			CPPHelper.compile (project, targetDirectory + "/obj", flags.concat ([ "-Dstatic_link" ]));
+			CPPHelper.compile (project, targetDirectory + "/obj", flags, "BuildMain.xml");
+			
+			FileHelper.copyFile (targetDirectory + "/obj/Main" + (project.debug ? "-debug" : ""), executablePath);
+			
+		}
+		
+		
+		ProcessHelper.runCommand ("", "chmod", [ "755", executablePath ]);
+			
 		
 	}
 	
@@ -197,7 +111,7 @@ class GCW0Platform extends PlatformTarget {
 	
 	public override function deploy ():Void {
 		
-		//DeploymentHelper.deploy (project, targetFlags, targetDirectory, "Linux " + (is64 ? "64" : "32") + "-bit");
+		DeploymentHelper.deploy (project, targetFlags, targetDirectory, "GCW0 ");
 		
 	}
 	
@@ -227,18 +141,9 @@ class GCW0Platform extends PlatformTarget {
 		
 		var project = project.clone ();
 		
-		/*if (isRaspberryPi) {
-			
-			project.haxedefs.set ("rpi", 1);
-			
-		}*/
-		
 		var context = project.templateContext;
 		
-		//context.NEKO_FILE = targetDirectory + "/obj/ApplicationMain.n";
-		//context.NODE_FILE = targetDirectory + "/bin/ApplicationMain.js";
 		context.CPP_DIR = targetDirectory + "/obj/";
-		//context.BUILD_DIR = project.app.path + "/linux" + (is64 ? "64" : "") + (isRaspberryPi ? "-rpi" : "");
 		context.BUILD_DIR = project.app.path + "/gcw0";
 		context.WIN_ALLOW_SHADERS = false;
 		
@@ -251,26 +156,6 @@ class GCW0Platform extends PlatformTarget {
 		
 		var commands = [];
 		
-		/*if (targetFlags.exists ("rpi")) {
-			
-			commands.push ([ "-Dlinux", "-Drpi" ]);
-			
-		} else {
-			
-			if (!targetFlags.exists ("32") && PlatformHelper.hostArchitecture == X64) {
-				
-				commands.push ([ "-Dlinux", "-DHXCPP_M64" ]);
-				
-			}
-			
-			if (!targetFlags.exists ("64") && (command == "rebuild" || PlatformHelper.hostArchitecture == Architecture.X86)) {
-				
-				commands.push ([ "-Dlinux" ]);
-				
-			}
-			
-		}*/
-		
 		commands.push ([ "-Dgcw0" ]);
 		
 		CPPHelper.rebuild (project, commands);
@@ -279,19 +164,6 @@ class GCW0Platform extends PlatformTarget {
 	
 	
 	public override function run ():Void {
-		
-		/*var arguments = additionalArguments.copy ();
-		
-		if (targetType == "nodejs") {
-			
-			NodeJSHelper.run (project, targetDirectory + "/bin/ApplicationMain.js", arguments);
-			
-		} else if (project.target == PlatformHelper.hostPlatform) {
-			
-			arguments = arguments.concat ([ "-livereload" ]);
-			ProcessHelper.runCommand (applicationDirectory, "./" + Path.withoutDirectory (executablePath), arguments);
-			
-		}*/
 		
 	}
 	
@@ -317,15 +189,6 @@ class GCW0Platform extends PlatformTarget {
 				
 				if (ndll.path == null || ndll.path == "") {
 					
-					/*if (isRaspberryPi) {
-						
-						context.ndlls[i].path = PathHelper.getLibraryPath (ndll, "RPi", "lib", ".a", project.debug);
-						
-					} else {
-						
-						context.ndlls[i].path = PathHelper.getLibraryPath (ndll, "Linux" + (is64 ? "64" : ""), "lib", ".a", project.debug);
-						
-					}*/
 					context.ndlls[i].path = PathHelper.getLibraryPath (ndll, "GCW0", "lib", ".a", project.debug);
 					
 				}
